@@ -1,6 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -14,24 +14,20 @@ public class Main {
             new Product("Сахар", 75.0)
     };
 
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         String s;
-        Basket shoppingCart;
+        Basket shoppingCart = new Basket(goods);
         int selectedItem;
         int itemCount;
 
-        File basketFile = new File("basket.txt");
+        File basketFile = new File("basket.bin");
 
         if (basketFile.exists()) {
             System.out.println("Загрузить корзину<ENTER>? ");
             if (sc.nextLine().equals("")) {
-                shoppingCart = Basket.loadFromTxtFile(basketFile);
-            } else {
-                shoppingCart = new Basket(goods);
+                shoppingCart = Basket.loadFromBinFile(basketFile);
             }
-        } else {
-            shoppingCart = new Basket(goods);
         }
 
         while (true) {
@@ -51,7 +47,7 @@ public class Main {
                         continue;
                     }
                     shoppingCart.addToCart(selectedItem - 1, itemCount);
-                    shoppingCart.saveTxt(basketFile);
+                    shoppingCart.saveBin(basketFile);
                 } catch (NumberFormatException nfe) {
                     System.out.println("\nНужно 2 аргумента - 2 целых числа");
                 } catch (FileNotFoundException e) {
